@@ -10,6 +10,9 @@ const passport = require('passport');
 const User = require('./models/User');
 const bcrypt = require('bcryptjs');
 
+// process.env vars are strings => don't check type 
+const dev = process.env.DEV == 'true' || false;
+
 // Init database
 const initDB = async () => {
     mongoose.Promise = Promise;
@@ -30,7 +33,6 @@ const initDB = async () => {
     }
 }
 initDB();
-
 const app = express();
 
 // Setup middleware
@@ -46,18 +48,20 @@ app.use('/api/image', require('./routes/image'));
 app.use('/api/post', require('./routes/post'));
 
 // Enable cors if in development mode
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.resolve("..", "client", "build")));
-    app.get("*", (req, res) => {
-        res.sendFile(path.resolve("..", "client", "build", "index.html"))
-    });
-}
-else if (process.env.NODE_ENV === "development") {
+if (dev) {
+    console.log("Running dev build");
     const corsOptions = {
         origin: "http://localhost:3000",
         oprionSuccessStatus: 200
     };
     app.use(cors(corsOptions));
+}
+else {
+    console.log("Running production build");
+    app.use(express.static(path.resolve("..", "client", "build")));
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve("..", "client", "build", "index.html"))
+    });
 }
 
 module.exports = app;

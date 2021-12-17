@@ -6,7 +6,9 @@
     "install": "cd client && npm install",
     "preinstall": "cd server && npm install",
     "dev:client": "cd client && npm start",
-    "dev:server": "cd server && npm run dev"
+    "dev:server": "cd server && npm run dev",
+	"build": "cd client && npm run build",
+	"start": "cd server && npm start"
   },
   "author": "ViliAu",
   "license": "ISC"
